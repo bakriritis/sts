@@ -15,22 +15,22 @@ import {
 
 // ========== CONFIGURATION ==========
 const GOOGLE_SHEETS = {
-    tasks: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5noqQZXi5ciYwvov6OivXEQzBM0kOLVrgdSpMSnE_RGhFNrx512dpRlfxJBBeCRWOe8IyvMPfEsQW/pub?output=csv",
-    team: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNwG7-hxVDy1vV4SoiWpSaUbT7TlL83F47lzwfGkUy1x7Rlgu0NacmjgWQbbNaVvATXoAH92bepkb9/pub?output=csv",
-    budget: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEtJmpiwvmUHHG3O4lsXWHnk4jbk5RArApj32WwR25y4D6Em1BwZxUPYELo8_yahSgZNqehRoXuOxM/pub?output=csv",
-    materials: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKHkn_izEZZ3dNJp3bdBQVa7kGb7SJUN8Zn4yknVJWhYQn--CneRXTNd8Lfk4wuobIqaWdPNIPbB4e/pub?output=csv",
-    performance: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6m2UelW3u1iUJFyDdrLJfXxw68ehhGI5vT1cMUhgBcJsqAaeLMGRBFhvnRl4VW7wgthx14rsWSImo/pub?output=csv",
-    photos: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvR309Cek9EY7Vwv9XQC_KxkIVsYkR_GGuYwJH_ewdVqPZ5SAauQqYso4OTKRzG3bsMKybA29EMiDj/pub?output=csv",
-    commentsRead: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTI8wnG3dA07Quo6gRNqX6pwEbdTZ5FZzwT0xrCMPrtnwSytbKoa71ixG4F3em45DoqFbbanS6L9yQ2/pub?output=csv",
-    commentsWrite: "https://script.google.com/macros/s/AKfycbz9RmoBOlgG515-BDtF6Ir1ke5ShlSE5WrkoL4gC--iOg9zSt4QeiBv6VCOYiVySzy5mg/exec",
-    invoices: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_uIN9NNwqHndYck5S9Voxb2ArjlVJ7JfwD_GhjsH_Tc5fAHLPYrjOGfYt_1mRTdK9LCeL--nPHqNe/pub?output=csv",
-    invoiceAdd: "https://script.google.com/macros/s/AKfycbw2SZHmW1krTdSYHGHPh7jVqW5HtDqFOZxW4qno4vpStFDNczLKVbRZbz6WCnNAT_zW/exec",
-    photoUpload: "https://script.google.com/macros/s/AKfycbx0AQQGXO_A1eCjq3Lsg0aon09_0W1IY4OEubS8xa_xSguE9-rhcKRy3c_0x4msSH7V/exec",
-    clientAccount: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYII2FVvAAl171cQhVmnYfABoKSjNIS-7RgkEw5lBJ9bFNTVmVHmtUxHmIZaDSYAheSXKjQ5bbtsZJ/pub?output=csv", // Add your sheet URL
-    clientAccountWrite: "https://script.google.com/macros/s/AKfycbwEROnjyxNVFGCjIBr5RVLGtm5AlCxv_vT_j4TUIyoAVQIV0y5ul7HWQ5VvvIhZhGpUQg/exec", // Add your script URL
-    paymentMilestones: "",
-    changeOrders: "",
-    cashFlow: "",
+    tasks: process.env.REACT_APP_TASKS_URL,
+    team: process.env.REACT_APP_TEAM_URL,
+    budget: process.env.REACT_APP_BUDGET_URL,
+    materials: process.env.REACT_APP_MATERIALS_URL,
+    performance: process.env.REACT_APP_PERFORMANCE_URL,
+    photos: process.env.REACT_APP_PHOTOS_URL,
+    commentsRead: process.env.REACT_APP_COMMENTS_READ_URL,
+    commentsWrite: process.env.REACT_APP_COMMENTS_WRITE_URL,
+    invoices: process.env.REACT_APP_INVOICES_URL,
+    invoiceAdd: process.env.REACT_APP_INVOICE_ADD_URL,
+    photoUpload: process.env.REACT_APP_PHOTO_UPLOAD_URL,
+    clientAccount: process.env.REACT_APP_CLIENT_ACCOUNT_URL,
+    clientAccountWrite: process.env.REACT_APP_CLIENT_ACCOUNT_WRITE_URL,
+    paymentMilestones: process.env.REACT_APP_PAYMENT_MILESTONES_URL || "",
+    changeOrders: process.env.REACT_APP_CHANGE_ORDERS_URL || "",
+    cashFlow: process.env.REACT_APP_CASH_FLOW_URL || "",
 };
 
 const PROJECT = {
@@ -44,7 +44,7 @@ const PROJECT = {
 
 const USERS = {
     "Khalid": {
-        password: "Khalid123",
+        token: process.env.REACT_APP_ADMIN_TOKEN,  // ← من .env
         name: "Khalid Jehangir",
         position: "Operations Manager",
         department: "Operations",
@@ -54,7 +54,7 @@ const USERS = {
         avatar: "https://ui-avatars.com/api/?name=Khalid+Jehangir&background=3b82f6&color=fff&size=200"
     },
     "bakri": {
-        password: "bakri123",
+        token: process.env.REACT_APP_PM_TOKEN,  // ← من .env
         name: "Bakri Mohammed",
         position: "Project Manager",
         department: "Project Management",
@@ -63,15 +63,15 @@ const USERS = {
         phone: "+966541546402",
         avatar: "https://raw.githubusercontent.com/bakriritis/sts/2f6658c98903b2759f98776c2f3d1b925022a1d1/Bakri.jpg"
     },
-    "viewer": {
-        password: "viewer123",
-        name: "Guest Viewer",
-        position: "Viewer",
-        department: "Guest",
-        role: "VIEWER",
+    "Rahim": {
+        token: process.env.REACT_APP_REPORTER_TOKEN,  // ← من .env
+        name: "Rahim Khan",
+        position: "Supervisor",
+        department: "Operation",
+        role: "Reporter",
         email: "viewer@project.com",
         phone: "",
-        avatar: "https://ui-avatars.com/api/?name=Guest+Viewer&background=gray&color=fff&size=200"
+        avatar: "https://ui-avatars.com/api/?name=Rahim+Khan&background=gray&color=fff&size=200"
     }
 };
 
@@ -370,10 +370,11 @@ export default function App() {
         setLoginError("");
         const user = USERS[loginForm.username];
 
-        if (user && user.password === loginForm.password) {
+        if (user && user.token === loginForm.password) {
             const userData = {
                 username: loginForm.username,
-                ...user
+
+
             };
             setCurrentUser(userData);
             setIsLoggedIn(true);
