@@ -1,8 +1,8 @@
 {
-  "name": "jubail-report",
+  "name": "sts-report",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://bakriritis.github.io/Jubail_North",
+  "homepage": "https://bakriritis.github.io/sts",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",

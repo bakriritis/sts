@@ -5,780 +5,1885 @@ import {
     RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
 } from "recharts";
 import {
-    Users, Calendar, Activity, CheckCircle, AlertTriangle, TrendingUp,
-    Sun, Moon, Download, Filter, Clock, DollarSign, Target, Camera,
-    AlertCircle, ChevronRight, UserCheck, MessageSquare, Award, Package,
-    FileText, Shield, Wrench, FileCheck, Search, Bell, Settings, Image,
-    MapPin, Phone, Mail, Briefcase, Star, BarChart3, TrendingDown
+    Users, Calendar, Activity, CheckCircle, AlertTriangle, TrendingUp, TrendingDown,
+    Sun, Moon, Download, Filter, Clock, DollarSign, Target, AlertCircle,
+    ChevronRight, MessageSquare, Award, FileText, Shield, Search, Bell, LogOut, Send,
+    MapPin, Phone, Mail, Briefcase, Star, RefreshCw, Upload, Receipt, Wallet,
+    Plus, Eye, Edit, Trash2, Package, Image as ImageIcon, CreditCard, X,
+    Check, FileSpreadsheet, TrendingDown as ArrowDown, TrendingUp as ArrowUp
 } from "lucide-react";
 
-// ===== GOOGLE SHEETS CONFIG =====
+// ========== CONFIGURATION ==========
 const GOOGLE_SHEETS = {
-    tasks: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5noqQZXi5ciYwvov6OivXEQzBM0kOLVrgdSpMSnE_RGhFNrx512dpRlfxJBBeCRWOe8IyvMPfEsQW/pub?output=csv", // ضع رابط Google Sheets CSV هنا
-    team: "", // ضع رابط Google Sheets CSV للفريق
-    budget: "", // ضع رابط Google Sheets CSV للميزانية
-    materials: "", // ضع رابط Google Sheets CSV للمواد
-    comments: "", // ضع رابط Google Sheets CSV للتعليقات
-    safety: "", // ضع رابط Google Sheets CSV للسلامة
-    equipment: "", // ضع رابط Google Sheets CSV للمعدات
-    timeline: "", // ضع رابط Google Sheets CSV للجدول الزمني
-    performance: "", // ضع رابط Google Sheets CSV للأداء
-    photos: "", // ضع رابط Google Sheets CSV للصور
-    milestones: "", // ضع رابط Google Sheets CSV للمعالم الرئيسية
-    risks: "", // ضع رابط Google Sheets CSV للمخاطر
+    tasks: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ5noqQZXi5ciYwvov6OivXEQzBM0kOLVrgdSpMSnE_RGhFNrx512dpRlfxJBBeCRWOe8IyvMPfEsQW/pub?output=csv",
+    team: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSNwG7-hxVDy1vV4SoiWpSaUbT7TlL83F47lzwfGkUy1x7Rlgu0NacmjgWQbbNaVvATXoAH92bepkb9/pub?output=csv",
+    budget: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEtJmpiwvmUHHG3O4lsXWHnk4jbk5RArApj32WwR25y4D6Em1BwZxUPYELo8_yahSgZNqehRoXuOxM/pub?output=csv",
+    materials: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSKHkn_izEZZ3dNJp3bdBQVa7kGb7SJUN8Zn4yknVJWhYQn--CneRXTNd8Lfk4wuobIqaWdPNIPbB4e/pub?output=csv",
+    performance: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ6m2UelW3u1iUJFyDdrLJfXxw68ehhGI5vT1cMUhgBcJsqAaeLMGRBFhvnRl4VW7wgthx14rsWSImo/pub?output=csv",
+    photos: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvR309Cek9EY7Vwv9XQC_KxkIVsYkR_GGuYwJH_ewdVqPZ5SAauQqYso4OTKRzG3bsMKybA29EMiDj/pub?output=csv",
+    commentsRead: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTI8wnG3dA07Quo6gRNqX6pwEbdTZ5FZzwT0xrCMPrtnwSytbKoa71ixG4F3em45DoqFbbanS6L9yQ2/pub?output=csv",
+    commentsWrite: "https://script.google.com/macros/s/AKfycbz9RmoBOlgG515-BDtF6Ir1ke5ShlSE5WrkoL4gC--iOg9zSt4QeiBv6VCOYiVySzy5mg/exec",
+    invoices: "https://docs.google.com/spreadsheets/d/e/2PACX-1vT_uIN9NNwqHndYck5S9Voxb2ArjlVJ7JfwD_GhjsH_Tc5fAHLPYrjOGfYt_1mRTdK9LCeL--nPHqNe/pub?output=csv",
+    invoiceAdd: "https://script.google.com/macros/s/AKfycbw2SZHmW1krTdSYHGHPh7jVqW5HtDqFOZxW4qno4vpStFDNczLKVbRZbz6WCnNAT_zW/exec",
+    photoUpload: "https://script.google.com/macros/s/AKfycbx0AQQGXO_A1eCjq3Lsg0aon09_0W1IY4OEubS8xa_xSguE9-rhcKRy3c_0x4msSH7V/exec",
+    clientAccount: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSYII2FVvAAl171cQhVmnYfABoKSjNIS-7RgkEw5lBJ9bFNTVmVHmtUxHmIZaDSYAheSXKjQ5bbtsZJ/pub?output=csv", // Add your sheet URL
+    clientAccountWrite: "https://script.google.com/macros/s/AKfycbwEROnjyxNVFGCjIBr5RVLGtm5AlCxv_vT_j4TUIyoAVQIV0y5ul7HWQ5VvvIhZhGpUQg/exec", // Add your script URL
+    paymentMilestones: "",
+    changeOrders: "",
+    cashFlow: "",
 };
 
-// ===== PROJECT CONFIG =====
-const projectName = "Kingdom Gate Tower - Low Current Systems";
-const projectClient = "Al Fahd Investment - STS";
-const projectContract = "SO-23_0941_001_R_08";
-const projectStart = new Date(2025, 2, 1);
-const projectEnd = new Date(2025, 11, 31);
+const PROJECT = {
+    name: "Kingdom Gate Tower - Low Current Systems",
+    client: "Al Fahd Investment - STS",
+    contract: "SO-23_0941_001_R_08",
+    start: new Date(2025, 2, 1),
+    end: new Date(2025, 11, 31),
+    totalValue: 1645659
+};
+
+const USERS = {
+    "Khalid": {
+        password: "Khalid123",
+        name: "Khalid Jehangir",
+        position: "Operations Manager",
+        department: "Operations",
+        role: "ADMIN",
+        email: "khalid@project.com",
+        phone: "+966541546402",
+        avatar: "https://ui-avatars.com/api/?name=Khalid+Jehangir&background=3b82f6&color=fff&size=200"
+    },
+    "bakri": {
+        password: "bakri123",
+        name: "Bakri Mohammed",
+        position: "Project Manager",
+        department: "Project Management",
+        role: "PM",
+        email: "bakri@project.com",
+        phone: "+966541546402",
+        avatar: "https://raw.githubusercontent.com/bakriritis/sts/2f6658c98903b2759f98776c2f3d1b925022a1d1/Bakri.jpg"
+    },
+    "viewer": {
+        password: "viewer123",
+        name: "Guest Viewer",
+        position: "Viewer",
+        department: "Guest",
+        role: "VIEWER",
+        email: "viewer@project.com",
+        phone: "",
+        avatar: "https://ui-avatars.com/api/?name=Guest+Viewer&background=gray&color=fff&size=200"
+    }
+};
+
+const PERMISSIONS = {
+    ADMIN: ["all"],
+    PM: ["all"],
+    VIEWER: ["view_all"]
+};
+
+const WHATSAPP = {
+    projectManager: "+966541546402",
+};
+
+let sessionTimer;
 
 export default function App() {
+    // Auth
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [currentUser, setCurrentUser] = useState(null);
+    const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+    const [loginError, setLoginError] = useState("");
+
+    // UI
     const [view, setView] = useState("Overview");
     const [darkMode, setDarkMode] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [autoRefresh, setAutoRefresh] = useState(false);
+    const [showNotifications, setShowNotifications] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedSystem, setSelectedSystem] = useState("All");
+    const [showFilters, setShowFilters] = useState(false);
     const [filterStatus, setFilterStatus] = useState("All");
     const [filterOwner, setFilterOwner] = useState("All");
-    const [filterTeam, setFilterTeam] = useState("All");
-    const [showFilters, setShowFilters] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [showNotifications, setShowNotifications] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [modalPhoto, setModalPhoto] = useState(null);
 
-    // State for all data
+    // Data
     const [tasksData, setTasksData] = useState([]);
     const [teamData, setTeamData] = useState([]);
     const [budgetData, setBudgetData] = useState([]);
     const [materialsData, setMaterialsData] = useState([]);
-    const [commentsData, setCommentsData] = useState([]);
-    const [safetyData, setSafetyData] = useState([]);
-    const [equipmentData, setEquipmentData] = useState([]);
-    const [timelineData, setTimelineData] = useState([]);
     const [performanceData, setPerformanceData] = useState([]);
     const [photosData, setPhotosData] = useState([]);
-    const [milestonesData, setMilestonesData] = useState([]);
-    const [risksData, setRisksData] = useState([]);
+    const [commentsData, setCommentsData] = useState([]);
     const [notifications, setNotifications] = useState([]);
+    const [invoicesData, setInvoicesData] = useState([]);
+    const [clientAccountData, setClientAccountData] = useState([]);
+    const [paymentMilestonesData, setPaymentMilestonesData] = useState([]);
+    const [changeOrdersData, setChangeOrdersData] = useState([]);
+    const [cashFlowData, setCashFlowData] = useState([]);
 
-    // Helper function to parse CSV
+    // Forms
+    const [newComment, setNewComment] = useState("");
+    const [commentPriority, setCommentPriority] = useState("Medium");
+    const [submittingComment, setSubmittingComment] = useState(false);
+    const [photoUploadForm, setPhotoUploadForm] = useState({ file: null, system: "", description: "" });
+    const [uploadingPhoto, setUploadingPhoto] = useState(false);
+    const [invoiceForm, setInvoiceForm] = useState({
+        invoiceNumber: "",
+        vendor: "",
+        amount: "",
+        category: "",
+        issueDate: "",
+        dueDate: "",
+        status: "Pending",
+        description: ""
+    });
+    const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+    const [submittingInvoice, setSubmittingInvoice] = useState(false);
+
+    // Client Account Forms
+    const [clientTransactionForm, setClientTransactionForm] = useState({
+        type: "invoice", // invoice, payment, adjustment
+        amount: "",
+        description: "",
+        referenceNumber: "",
+        date: new Date().toISOString().split('T')[0]
+    });
+    const [showClientTransactionModal, setShowClientTransactionModal] = useState(false);
+    const [submittingClientTransaction, setSubmittingClientTransaction] = useState(false);
+
+    // ========== UTILS ==========
     const parseCSV = (text) => {
-        const lines = text.split("\n").filter(line => line.trim() !== "");
-        if (lines.length === 0) return [];
-
+        const lines = text.split("\n").filter(l => l.trim());
+        if (!lines.length) return [];
         const headers = lines[0].split(",").map(h => h.trim());
         return lines.slice(1).map(line => {
             const values = line.split(",");
-            const obj = {};
-            headers.forEach((header, index) => {
-                obj[header] = values[index]?.trim() || "";
-            });
-            return obj;
+            return headers.reduce((obj, header, i) => ({ ...obj, [header]: values[i]?.trim() || "" }), {});
         });
     };
 
-    // Fetch data from Google Sheets
+    const hasPermission = (perm) => {
+        if (!currentUser) return false;
+        return PERMISSIONS[currentUser.role]?.includes(perm) || PERMISSIONS[currentUser.role]?.includes("all");
+    };
+
+    const sendWhatsApp = (type, message) => {
+        const phone = WHATSAPP.projectManager;
+        if (phone) {
+            const url = `https://api.whatsapp.com/send?phone=${phone}&text=${encodeURIComponent(message)}`;
+            window.open(url, '_blank');
+        }
+    };
+
+    const formatCurrency = (amount) => {
+        return `SAR ${Number(amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    };
+
+    // ========== SESSION ==========
+    const startSession = () => {
+        clearTimeout(sessionTimer);
+        sessionTimer = setTimeout(() => {
+            handleLogout();
+            alert("Session expired due to inactivity");
+        }, 30 * 60 * 1000);
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                // Fetch Tasks
-                if (GOOGLE_SHEETS.tasks) {
-                    const res = await fetch(GOOGLE_SHEETS.tasks);
-                    const text = await res.text();
-                    setTasksData(parseCSV(text));
-                }
-
-                // Fetch Team
-                if (GOOGLE_SHEETS.team) {
-                    const res = await fetch(GOOGLE_SHEETS.team);
-                    const text = await res.text();
-                    setTeamData(parseCSV(text));
-                }
-
-                // Fetch Budget
-                if (GOOGLE_SHEETS.budget) {
-                    const res = await fetch(GOOGLE_SHEETS.budget);
-                    const text = await res.text();
-                    const data = parseCSV(text).map(d => ({
-                        ...d,
-                        allocated: Number(d.allocated) || 0,
-                        spent: Number(d.spent) || 0,
-                        remaining: Number(d.remaining) || 0
-                    }));
-                    setBudgetData(data);
-                }
-
-                // Fetch Materials
-                if (GOOGLE_SHEETS.materials) {
-                    const res = await fetch(GOOGLE_SHEETS.materials);
-                    const text = await res.text();
-                    setMaterialsData(parseCSV(text));
-                }
-
-                // Fetch Comments
-                if (GOOGLE_SHEETS.comments) {
-                    const res = await fetch(GOOGLE_SHEETS.comments);
-                    const text = await res.text();
-                    setCommentsData(parseCSV(text));
-                }
-
-                // Fetch Safety
-                if (GOOGLE_SHEETS.safety) {
-                    const res = await fetch(GOOGLE_SHEETS.safety);
-                    const text = await res.text();
-                    setSafetyData(parseCSV(text));
-                }
-
-                // Fetch Equipment
-                if (GOOGLE_SHEETS.equipment) {
-                    const res = await fetch(GOOGLE_SHEETS.equipment);
-                    const text = await res.text();
-                    setEquipmentData(parseCSV(text));
-                }
-
-                // Fetch Timeline
-                if (GOOGLE_SHEETS.timeline) {
-                    const res = await fetch(GOOGLE_SHEETS.timeline);
-                    const text = await res.text();
-                    const data = parseCSV(text).map(d => ({
-                        ...d,
-                        planned: Number(d.planned) || 0,
-                        actual: Number(d.actual) || 0
-                    }));
-                    setTimelineData(data);
-                }
-
-                // Fetch Performance
-                if (GOOGLE_SHEETS.performance) {
-                    const res = await fetch(GOOGLE_SHEETS.performance);
-                    const text = await res.text();
-                    const data = parseCSV(text).map(d => ({
-                        ...d,
-                        productivity: Number(d.productivity) || 0,
-                        quality: Number(d.quality) || 0,
-                        teamwork: Number(d.teamwork) || 0,
-                        reliability: Number(d.reliability) || 0
-                    }));
-                    setPerformanceData(data);
-                }
-
-                // Fetch Photos
-                if (GOOGLE_SHEETS.photos) {
-                    const res = await fetch(GOOGLE_SHEETS.photos);
-                    const text = await res.text();
-                    setPhotosData(parseCSV(text));
-                }
-
-                // Fetch Milestones
-                if (GOOGLE_SHEETS.milestones) {
-                    const res = await fetch(GOOGLE_SHEETS.milestones);
-                    const text = await res.text();
-                    setMilestonesData(parseCSV(text));
-                }
-
-                // Fetch Risks
-                if (GOOGLE_SHEETS.risks) {
-                    const res = await fetch(GOOGLE_SHEETS.risks);
-                    const text = await res.text();
-                    const data = parseCSV(text).map(d => ({
-                        ...d,
-                        probability: Number(d.probability) || 0,
-                        impact: Number(d.impact) || 0
-                    }));
-                    setRisksData(data);
-                }
-
-            } catch (err) {
-                console.error("Failed to fetch data:", err);
-            }
-            setLoading(false);
+        const reset = () => startSession();
+        window.addEventListener("mousemove", reset);
+        window.addEventListener("keydown", reset);
+        return () => {
+            window.removeEventListener("mousemove", reset);
+            window.removeEventListener("keydown", reset);
+            clearTimeout(sessionTimer);
         };
-
-        fetchData();
-
-        // Auto-generate notifications
-        setNotifications([
-            { id: 1, type: "warning", message: "3 tasks approaching deadline", time: "2 hours ago" },
-            { id: 2, type: "info", message: "Weekly progress meeting on Monday 9AM", time: "5 hours ago" },
-            { id: 3, type: "success", message: "Phase 1 milestone completed", time: "1 day ago" },
-        ]);
     }, []);
 
-    // Filter and calculate stats
-    const filteredTasks = tasksData.filter(task => {
-        const statusMatch = filterStatus === "All" || task.status === filterStatus;
-        const ownerMatch = filterOwner === "All" || task.assigned_to === filterOwner;
-        const searchMatch = searchQuery === "" ||
-            task.system?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            task.phase?.toLowerCase().includes(searchQuery.toLowerCase());
-        return statusMatch && ownerMatch && searchMatch;
-    });
+    useEffect(() => {
+        const saved = localStorage.getItem("currentUser");
+        if (saved) {
+            try {
+                const userData = JSON.parse(saved);
+                setCurrentUser(userData);
+                setIsLoggedIn(true);
+            } catch (e) {
+                console.error("Failed to parse saved user", e);
+                localStorage.removeItem("currentUser");
+            }
+        }
+    }, []);
 
-    const filteredPerformance = performanceData.filter(member =>
-        filterTeam === "All" || member.team === filterTeam
-    );
+    // ========== DATA FETCHING ==========
+    const fetchData = async () => {
+        if (!isLoggedIn) return;
+        setLoading(true);
+        try {
+            const fetch1 = async (url, setter, transform = d => d) => {
+                if (!url) return;
+                try {
+                    const res = await fetch(url);
+                    const text = await res.text();
+                    setter(transform(parseCSV(text)));
+                } catch (err) {
+                    console.error(`Failed to fetch from ${url}:`, err);
+                }
+            };
 
-    const totalTasks = tasksData.length;
-    const completedTasks = tasksData.filter(t => t.status === "Completed").length;
-    const inProgressTasks = tasksData.filter(t => t.status === "In Progress").length;
-    const notStartedTasks = tasksData.filter(t => t.status === "Not Started").length;
-    const avgProgress = tasksData.reduce((sum, t) => sum + (Number(t.progress) || 0), 0) / totalTasks || 0;
+            await Promise.all([
+                fetch1(GOOGLE_SHEETS.tasks, setTasksData),
+                fetch1(GOOGLE_SHEETS.team, setTeamData),
+                fetch1(GOOGLE_SHEETS.budget, setBudgetData, data => data.map(d => ({
+                    ...d,
+                    allocated: Number(d.allocated) || 0,
+                    spent: Number(d.spent) || 0,
+                    remaining: Number(d.remaining) || 0
+                }))),
+                fetch1(GOOGLE_SHEETS.materials, setMaterialsData),
+                fetch1(GOOGLE_SHEETS.performance, setPerformanceData, data => data.map(d => ({
+                    ...d,
+                    productivity: Number(d.productivity) || 0,
+                    quality: Number(d.quality) || 0,
+                    teamwork: Number(d.teamwork) || 0,
+                    reliability: Number(d.reliability) || 0
+                }))),
+                fetch1(GOOGLE_SHEETS.photos, setPhotosData),
+                fetch1(GOOGLE_SHEETS.commentsRead, setCommentsData),
+                fetch1(GOOGLE_SHEETS.invoices, setInvoicesData, data => data.map(d => ({
+                    ...d,
+                    amount: Number(d.amount) || 0
+                }))),
+                fetch1(GOOGLE_SHEETS.clientAccount, setClientAccountData, data => data.map(d => ({
+                    ...d,
+                    amount: Number(d.amount) || 0,
+                    debit: Number(d.debit) || 0,
+                    credit: Number(d.credit) || 0,
+                    balance: Number(d.balance) || 0
+                }))),
+                fetch1(GOOGLE_SHEETS.paymentMilestones, setPaymentMilestonesData),
+                fetch1(GOOGLE_SHEETS.changeOrders, setChangeOrdersData),
+                fetch1(GOOGLE_SHEETS.cashFlow, setCashFlowData, data => data.map(d => ({
+                    ...d,
+                    income: Number(d.income) || 0,
+                    expenses: Number(d.expenses) || 0
+                })))
+            ]);
 
-    const totalBudget = budgetData.reduce((sum, c) => sum + c.allocated, 0);
-    const totalSpent = budgetData.reduce((sum, c) => sum + c.spent, 0);
-    const budgetRemaining = totalBudget - totalSpent;
+            setTimeout(generateNotifications, 500);
+        } catch (err) {
+            console.error("Fetch error:", err);
+        }
+        setLoading(false);
+    };
 
-    const daysRemaining = Math.ceil((projectEnd - new Date()) / (1000 * 60 * 60 * 24));
+    useEffect(() => {
+        fetchData();
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        if (autoRefresh && isLoggedIn) {
+            const int = setInterval(fetchData, 30000);
+            return () => clearInterval(int);
+        }
+    }, [autoRefresh, isLoggedIn]);
+
+    // ========== SMART NOTIFICATIONS ==========
+    const generateNotifications = () => {
+        const notifs = [];
+
+        // Budget alerts
+        budgetData.forEach(item => {
+            if (item.allocated > 0) {
+                const pct = (item.spent / item.allocated) * 100;
+                if (pct >= 80) {
+                    notifs.push({
+                        id: `budget-${item.name}`,
+                        type: "warning",
+                        message: `⚠️ Budget Alert: ${item.name} at ${pct.toFixed(0)}%`,
+                        time: "now",
+                        priority: pct >= 90 ? "high" : "medium"
+                    });
+                }
+            }
+        });
+
+        // Deadline warnings
+        const today = new Date();
+        tasksData.forEach(task => {
+            if (task.deadlineDate && task.status !== "Completed") {
+                const deadline = new Date(task.deadlineDate);
+                const diffMs = deadline - today;
+                const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+                if (diffDays <= 3 && diffDays >= 0) {
+                    notifs.push({
+                        id: `task-${task.id}`,
+                        type: "warning",
+                        message: `⏰ Task "${task.subTask || task.system}" due in ${diffDays} day${diffDays !== 1 ? 's' : ''}`,
+                        time: "now",
+                        priority: diffDays <= 1 ? "high" : "medium"
+                    });
+                } else if (diffDays < 0) {
+                    notifs.push({
+                        id: `overdue-${task.id}`,
+                        type: "error",
+                        message: `🚨 OVERDUE: "${task.subTask || task.system}" was due ${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''} ago`,
+                        time: "now",
+                        priority: "high"
+                    });
+                }
+            }
+        });
+
+        // Invoice alerts
+        invoicesData.forEach(invoice => {
+            if (invoice.status === "Pending" && invoice.dueDate) {
+                const dueDate = new Date(invoice.dueDate);
+                const diffMs = dueDate - today;
+                const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+                if (diffDays <= 3 && diffDays >= 0) {
+                    notifs.push({
+                        id: `invoice-${invoice.invoiceNumber}`,
+                        type: "warning",
+                        message: `💰 Invoice ${invoice.invoiceNumber} due in ${diffDays} day${diffDays !== 1 ? 's' : ''}`,
+                        time: "now",
+                        priority: "medium"
+                    });
+                } else if (diffDays < 0) {
+                    notifs.push({
+                        id: `invoice-overdue-${invoice.invoiceNumber}`,
+                        type: "error",
+                        message: `🚨 Invoice ${invoice.invoiceNumber} overdue by ${Math.abs(diffDays)} day${Math.abs(diffDays) !== 1 ? 's' : ''}`,
+                        time: "now",
+                        priority: "high"
+                    });
+                }
+            }
+        });
+
+        setNotifications(notifs);
+    };
+
+    // ========== AUTH ==========
+    const handleLogin = () => {
+        setLoginError("");
+        const user = USERS[loginForm.username];
+
+        if (user && user.password === loginForm.password) {
+            const userData = {
+                username: loginForm.username,
+                ...user
+            };
+            setCurrentUser(userData);
+            setIsLoggedIn(true);
+            startSession();
+            localStorage.setItem("currentUser", JSON.stringify(userData));
+        } else {
+            setLoginError("Invalid username or password");
+        }
+    };
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
+        setCurrentUser(null);
+        localStorage.removeItem("currentUser");
+        setLoginForm({ username: "", password: "" });
+        clearTimeout(sessionTimer);
+    };
+
+    // ========== ACTIONS ==========
+    const submitComment = async () => {
+        if (!newComment.trim()) return;
+        setSubmittingComment(true);
+
+        try {
+            const params = new URLSearchParams();
+            params.append('username', currentUser.name);
+            params.append('position', currentUser.position);
+            params.append('comment', newComment);
+            params.append('department', currentUser.department);
+            params.append('avatar', currentUser.avatar);
+            params.append('priority', commentPriority);
+
+            await fetch(GOOGLE_SHEETS.commentsWrite, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params.toString()
+            });
+
+            alert("Comment submitted successfully!");
+            setNewComment("");
+            setTimeout(fetchData, 2000);
+        } catch (err) {
+            console.error(err);
+            alert("Failed to submit comment");
+        } finally {
+            setSubmittingComment(false);
+        }
+    };
+
+    const uploadPhoto = async () => {
+        if (!photoUploadForm.file || !photoUploadForm.system) {
+            alert("Please select a file and system");
+            return;
+        }
+
+        if (!GOOGLE_SHEETS.photoUpload) {
+            alert("Photo upload URL is missing!");
+            return;
+        }
+
+        setUploadingPhoto(true);
+
+        try {
+            const reader = new FileReader();
+
+            reader.onload = async (e) => {
+                try {
+                    const base64Data = e.target.result.split(',')[1];
+
+                    await fetch(GOOGLE_SHEETS.photoUpload, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fileData: base64Data,
+                            fileName: photoUploadForm.file.name,
+                            mimeType: photoUploadForm.file.type,
+                            system: photoUploadForm.system,
+                            description: photoUploadForm.description || "No description",
+                            uploadedBy: currentUser.name,
+                            timestamp: new Date().toISOString()
+                        })
+                    });
+
+                    alert("Photo uploaded successfully!");
+                    setPhotoUploadForm({ file: null, system: "", description: "" });
+
+                    setTimeout(() => {
+                        fetchData();
+                        setUploadingPhoto(false);
+                    }, 2000);
+
+                } catch (innerErr) {
+                    console.error("Fetch error:", innerErr);
+                    alert("Upload failed. Check your internet connection.");
+                    setUploadingPhoto(false);
+                }
+            };
+
+            reader.onerror = () => {
+                alert("Error reading file");
+                setUploadingPhoto(false);
+            };
+
+            reader.readAsDataURL(photoUploadForm.file);
+
+        } catch (err) {
+            console.error("Photo upload error:", err);
+            alert("An unexpected error occurred.");
+            setUploadingPhoto(false);
+        }
+    };
+
+    const addInvoice = async () => {
+        // Validate all required fields
+        if (!invoiceForm.invoiceNumber || !invoiceForm.vendor || !invoiceForm.amount ||
+            !invoiceForm.category || !invoiceForm.issueDate || !invoiceForm.dueDate) {
+            alert("Please fill all required fields");
+            return;
+        }
+
+        setSubmittingInvoice(true);
+        try {
+            const params = new URLSearchParams();
+            params.append('invoiceNumber', invoiceForm.invoiceNumber);
+            params.append('vendor', invoiceForm.vendor);
+            params.append('amount', invoiceForm.amount);
+            params.append('category', invoiceForm.category);
+            params.append('issueDate', invoiceForm.issueDate);
+            params.append('dueDate', invoiceForm.dueDate);
+            params.append('status', invoiceForm.status);
+            params.append('description', invoiceForm.description || '');
+            params.append('addedBy', currentUser.name);
+            params.append('timestamp', new Date().toISOString());
+
+            await fetch(GOOGLE_SHEETS.invoiceAdd, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params.toString()
+            });
+
+            alert("Invoice added successfully!");
+            setShowInvoiceModal(false);
+            setInvoiceForm({
+                invoiceNumber: "",
+                vendor: "",
+                amount: "",
+                category: "",
+                issueDate: "",
+                dueDate: "",
+                status: "Pending",
+                description: ""
+            });
+            setTimeout(fetchData, 2000);
+        } catch (err) {
+            console.error("Invoice submission error:", err);
+            alert("Failed to add invoice. Please try again.");
+        }
+        setSubmittingInvoice(false);
+    };
+
+    const addClientTransaction = async () => {
+        if (!clientTransactionForm.amount || !clientTransactionForm.description) {
+            alert("Please fill all required fields");
+            return;
+        }
+
+        setSubmittingClientTransaction(true);
+        try {
+            const params = new URLSearchParams();
+            params.append('type', clientTransactionForm.type);
+            params.append('amount', clientTransactionForm.amount);
+            params.append('description', clientTransactionForm.description);
+            params.append('referenceNumber', clientTransactionForm.referenceNumber || '');
+            params.append('date', clientTransactionForm.date);
+            params.append('addedBy', currentUser.name);
+            params.append('timestamp', new Date().toISOString());
+
+            await fetch(GOOGLE_SHEETS.clientAccountWrite, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params.toString()
+            });
+
+            alert("Transaction added successfully!");
+            setShowClientTransactionModal(false);
+            setClientTransactionForm({
+                type: "invoice",
+                amount: "",
+                description: "",
+                referenceNumber: "",
+                date: new Date().toISOString().split('T')[0]
+            });
+            setTimeout(fetchData, 2000);
+        } catch (err) {
+            console.error("Client transaction error:", err);
+            alert("Failed to add transaction. Please try again.");
+        }
+        setSubmittingClientTransaction(false);
+    };
+
+    // ========== HELPER: GET TEAM MEMBER INFO ==========
+    const getTeamMemberInfo = (username) => {
+        const userInfo = Object.values(USERS).find(u => u.name === username);
+        if (userInfo) return userInfo;
+
+        const teamMember = teamData.find(t => t.name === username);
+        if (teamMember) {
+            return {
+                name: teamMember.name,
+                position: teamMember.role || "Team Member",
+                department: teamMember.department || "Project Team",
+                avatar: teamMember.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(teamMember.name)}&background=random&color=fff&size=200`,
+                email: teamMember.email,
+                phone: teamMember.phone
+            };
+        }
+
+        return {
+            name: username,
+            position: "Team Member",
+            department: "Project Team",
+            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(username)}&background=random&color=fff&size=200`,
+            email: "",
+            phone: ""
+        };
+    };
+
+    // ========== STATS ==========
+    const stats = {
+        totalTasks: tasksData.length,
+        completed: tasksData.filter(t => t.status === "Completed").length,
+        inProgress: tasksData.filter(t => t.status === "In Progress").length,
+        pending: tasksData.filter(t => t.status === "Pending" || t.status === "Not Started").length,
+        avgProgress: tasksData.length ? Math.round((tasksData.filter(t => t.status === "Completed").length / tasksData.length) * 100) : 0,
+        totalBudget: budgetData.reduce((s, c) => s + c.allocated, 0),
+        totalSpent: budgetData.reduce((s, c) => s + c.spent, 0),
+        daysLeft: Math.ceil((PROJECT.end - new Date()) / 86400000),
+        invoicesTotal: invoicesData.reduce((s, i) => s + (Number(i.amount) || 0), 0),
+        invoicesPaid: invoicesData.filter(i => i.status === "Paid").length,
+        invoicesPending: invoicesData.filter(i => i.status === "Pending").length,
+        changeOrdersTotal: changeOrdersData.reduce((s, c) => s + (Number(c.amount) || 0), 0),
+        clientBalance: clientAccountData.length > 0 ? clientAccountData[clientAccountData.length - 1].balance : 0,
+        totalInvoiced: clientAccountData.filter(t => t.type === "invoice").reduce((s, t) => s + Number(t.debit || 0), 0),
+
+        totalReceived: clientAccountData.filter(t => t.type === "payment").reduce((s, t) => s + Number(t.credit || 0), 0),
+
+    };
 
     const theme = darkMode
         ? { bg: "bg-gray-900", card: "bg-gray-800", text: "text-gray-100", border: "border-gray-700", hover: "hover:bg-gray-700" }
         : { bg: "bg-gradient-to-br from-gray-50 to-blue-50", card: "bg-white", text: "text-gray-900", border: "border-gray-200", hover: "hover:bg-gray-50" };
 
-    const exportToPDF = () => window.print();
-
-    const StatCard = ({ icon: Icon, title, value, subtitle, color, trend, alert }) => (
-        <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border} transform transition-all hover:scale-105 hover:shadow-xl relative`}>
-            {alert && <AlertCircle className="absolute top-2 right-2 text-red-500" size={20} />}
-            <div className="flex items-start justify-between mb-4">
+    // ========== COMPONENTS ==========
+    const StatCard = ({ icon: Icon, title, value, subtitle, color, trend }) => (
+        <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border} hover:scale-105 transition-all cursor-pointer`}>
+            <div className="flex justify-between mb-4">
                 <div className={`p-3 rounded-lg bg-gradient-to-br ${color}`}>
                     <Icon className="text-white" size={24} />
                 </div>
                 {trend && (
-                    <div className={`flex items-center gap-1 text-sm font-medium ${trend.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
-                        {trend.startsWith('+') ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+                    <span className={`text-sm font-bold ${trend.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+                        {trend.startsWith('+') ? <TrendingUp size={14} className="inline" /> : <TrendingDown size={14} className="inline" />}
                         {trend}
-                    </div>
+                    </span>
                 )}
             </div>
-            <h3 className="text-gray-500 text-sm font-medium mb-1">{title}</h3>
-            <p className={`text-3xl font-bold ${theme.text} mb-1`}>{value}</p>
-            {subtitle && <p className="text-gray-400 text-xs">{subtitle}</p>}
+            <h3 className="text-gray-500 text-sm font-medium uppercase">{title}</h3>
+            <p className={`text-3xl font-bold ${theme.text}`}>{value}</p>
+            {subtitle && <p className="text-gray-400 text-xs mt-1">{subtitle}</p>}
         </div>
     );
 
-    const StatusBadge = ({ status }) => {
-        const colors = {
-            "Completed": "bg-green-500",
-            "In Progress": "bg-blue-500",
-            "Not Started": "bg-orange-500"
-        };
-        return <span className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${colors[status] || 'bg-gray-500'}`}>{status}</span>;
-    };
+    const SystemHealthCard = ({ system, total, completed, progress }) => (
+        <div className={`${theme.card} rounded-xl p-4 border ${theme.border} hover:shadow-lg transition-all`}>
+            <div className="flex justify-between items-center mb-3">
+                <h4 className="font-bold text-sm">{system}</h4>
+                <span className="text-lg font-bold text-blue-600">{progress}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-2 rounded-full transition-all" style={{ width: `${progress}%` }} />
+            </div>
+            <div className="flex justify-between text-xs text-gray-500">
+                <span>✓ {completed}</span>
+                <span>Total {total}</span>
+            </div>
+        </div>
+    );
 
-    if (loading) {
+    // ========== LOGIN SCREEN ==========
+    if (!isLoggedIn) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
-                <div className="text-center">
-                    <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-                    <p className="text-lg font-semibold text-gray-700">Loading Project Dashboard...</p>
+            <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center p-4">
+                <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+                    <div className="text-center mb-8">
+                        <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+                            <Shield className="text-white" size={40} />
+                        </div>
+                        <h1 className="text-3xl font-bold text-gray-800 mb-2">Project Dashboard</h1>
+                        <p className="text-gray-600 text-sm">{PROJECT.name}</p>
+                    </div>
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-2 text-gray-700">Username</label>
+                            <input
+                                type="text"
+                                value={loginForm.username}
+                                onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                placeholder="Enter username"
+                                autoComplete="username"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-2 text-gray-700">Password</label>
+                            <input
+                                type="password"
+                                value={loginForm.password}
+                                onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                                onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                                placeholder="Enter password"
+                                autoComplete="current-password"
+                            />
+                        </div>
+                        {loginError && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
+                                <AlertCircle size={20} />
+                                <span className="text-sm">{loginError}</span>
+                            </div>
+                        )}
+                        <button
+                            onClick={handleLogin}
+                            className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transform hover:scale-[1.02] transition-all"
+                        >
+                            Login
+                        </button>
+                    </div>
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm text-gray-600 font-semibold mb-2"></p>
+                        <div className="space-y-1 text-xs text-gray-700">
+                            <p> <span className="font-mono bg-white px-2 py-0.5 rounded"></span></p>
+                            <p><span className="font-mono bg-white px-2 py-0.5 rounded"></span></p>
+                            <p><span className="font-mono bg-white px-2 py-0.5 rounded"></span></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
 
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="w-20 h-20 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                    <p className="text-2xl font-bold text-white mb-2">Loading Dashboard...</p>
+                    <p className="text-white/80 text-sm">Fetching latest data from Google Sheets</p>
+                </div>
+            </div>
+        );
+    }
+
+    // Calculate system health for overview
+    const systemsHealth = [...new Set(tasksData.map(t => t.system))].filter(Boolean).map(sys => {
+        const sysTasks = tasksData.filter(t => t.system === sys);
+        const completed = sysTasks.filter(t => t.status === "Completed").length;
+        return {
+            system: sys,
+            total: sysTasks.length,
+            completed,
+            progress: sysTasks.length ? Math.round((completed / sysTasks.length) * 100) : 0
+        };
+    });
+
+    // ========== MAIN DASHBOARD ==========
     return (
         <div className={`min-h-screen ${theme.bg} ${theme.text}`}>
-            {/* Header */}
-            <div className={`${theme.card} shadow-lg border-b ${theme.border}`}>
-                <div className="max-w-7xl mx-auto px-6 py-6">
-                    <div className="flex items-center justify-between flex-wrap gap-4">
-                        <div>
-                            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                {projectName}
-                            </h1>
-                            <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
-                                <span className="flex items-center gap-1">
-                                    <Calendar size={14} />Client: {projectClient}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                    <Briefcase size={14} />Contract: {projectContract}
-                                </span>
-                                <span className="flex items-center gap-1 text-blue-600 font-semibold">
-                                    <Clock size={14} />{daysRemaining} days remaining
-                                </span>
+            {/* HEADER */}
+            <div className={`${theme.card} border-b ${theme.border} sticky top-0 z-40 shadow-lg`}>
+                <div className="max-w-7xl mx-auto px-4 py-4">
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                                <Activity className="text-white" size={24} />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold">{PROJECT.name}</h1>
+                                <p className="text-sm text-gray-500">{PROJECT.client}</p>
                             </div>
                         </div>
-                        <div className="flex gap-3">
+
+                        <div className="flex items-center gap-3">
+                            <button
+                                onClick={() => setAutoRefresh(!autoRefresh)}
+                                className={`p-2 rounded-lg ${autoRefresh ? 'bg-green-500 text-white' : 'bg-gray-200'}`}
+                                title="Auto-refresh every 30s"
+                            >
+                                <RefreshCw size={20} className={autoRefresh ? 'animate-spin' : ''} />
+                            </button>
+
                             <div className="relative">
-                                <button onClick={() => setShowNotifications(!showNotifications)}
-                                    className={`p-3 rounded-lg ${theme.card} border ${theme.border} relative hover:shadow-md transition-all`}>
+                                <button
+                                    onClick={() => setShowNotifications(!showNotifications)}
+                                    className="p-2 rounded-lg bg-gray-200 relative"
+                                >
                                     <Bell size={20} />
                                     {notifications.length > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
+                                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                                             {notifications.length}
                                         </span>
                                     )}
                                 </button>
+
                                 {showNotifications && (
-                                    <div className={`absolute right-0 mt-2 w-80 ${theme.card} rounded-lg shadow-xl border ${theme.border} z-50 overflow-hidden`}>
-                                        <div className="p-4 border-b border-gray-200 bg-gradient-to-r from-blue-500 to-purple-600">
-                                            <h3 className="font-bold text-white">Notifications</h3>
+                                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border max-h-96 overflow-y-auto">
+                                        <div className="p-4 border-b">
+                                            <h3 className="font-bold">Notifications</h3>
                                         </div>
-                                        <div className="max-h-96 overflow-y-auto">
-                                            {notifications.map(notif => (
-                                                <div key={notif.id} className={`p-4 border-b border-gray-100 ${theme.hover} cursor-pointer transition-all`}>
-                                                    <div className="flex items-start gap-3">
-                                                        <div className={`w-2 h-2 rounded-full mt-2 ${notif.type === 'warning' ? 'bg-orange-500' :
-                                                            notif.type === 'success' ? 'bg-green-500' : 'bg-blue-500'
-                                                            }`} />
-                                                        <div className="flex-1">
-                                                            <p className="text-sm font-medium">{notif.message}</p>
-                                                            <span className="text-xs text-gray-500">{notif.time}</span>
-                                                        </div>
+                                        {notifications.length === 0 ? (
+                                            <div className="p-4 text-center text-gray-500">
+                                                No notifications
+                                            </div>
+                                        ) : (
+                                            <div className="divide-y">
+                                                {notifications.map(notif => (
+                                                    <div key={notif.id} className={`p-4 ${notif.priority === 'high' ? 'bg-red-50' : ''}`}>
+                                                        <p className="text-sm">{notif.message}</p>
+                                                        <p className="text-xs text-gray-400 mt-1">{notif.time}</p>
                                                     </div>
-                                                </div>
-                                            ))}
-                                        </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
-                            <button onClick={() => setDarkMode(!darkMode)}
-                                className={`p-3 rounded-lg ${theme.card} border ${theme.border} hover:shadow-md transition-all`}>
+
+                            <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-lg bg-gray-200">
                                 {darkMode ? <Sun size={20} /> : <Moon size={20} />}
                             </button>
-                            <button onClick={exportToPDF}
-                                className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold flex items-center gap-2 hover:shadow-lg transform hover:scale-105 transition-all">
-                                <Download size={20} />Export PDF
-                            </button>
+
+                            <div className="flex items-center gap-3 border-l pl-3">
+                                <img src={currentUser.avatar} alt={currentUser.name} className="w-10 h-10 rounded-full" />
+                                <div className="text-sm">
+                                    <p className="font-semibold">{currentUser.name}</p>
+                                    <p className="text-xs text-gray-500">{currentUser.position}</p>
+                                </div>
+                                <button onClick={handleLogout} className="p-2 rounded-lg bg-red-100 text-red-600 hover:bg-red-200">
+                                    <LogOut size={18} />
+                                </button>
+                            </div>
                         </div>
+                    </div>
+
+                    {/* NAVIGATION */}
+                    <div className="flex gap-2 mt-4 overflow-x-auto pb-2">
+                        {["Overview", "Tasks", "Team", "Budget", "Materials", "Photos", "Invoices", "Client Account", "Comments"].map(v => (
+                            <button
+                                key={v}
+                                onClick={() => setView(v)}
+                                className={`px-4 py-2 rounded-lg font-semibold whitespace-nowrap transition-all ${view === v
+                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
+                                    : `${theme.card} ${theme.hover}`
+                                    }`}
+                            >
+                                {v}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </div>
 
-            {/* Search Bar */}
-            <div className="max-w-7xl mx-auto px-6 mt-6">
-                <div className="flex-1 relative mb-4">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                    <input
-                        type="text"
-                        placeholder="Search tasks, systems, team members..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className={`w-full pl-10 pr-4 py-3 rounded-lg border ${theme.border} ${theme.card} focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all`}
-                    />
-                </div>
-
-                {/* Navigation Tabs */}
-                <div className="flex gap-2 border-b border-gray-300 overflow-x-auto">
-                    {["Overview", "Tasks", "Team", "Performance", "Budget", "Materials", "Equipment", "Safety", "Photos", "Milestones", "Risks", "Comments"].map(tab => (
-                        <button key={tab} onClick={() => setView(tab)}
-                            className={`px-6 py-3 font-semibold border-b-2 whitespace-nowrap transition-all ${view === tab
-                                ? "border-blue-600 text-blue-600"
-                                : "border-transparent text-gray-500 hover:text-gray-700"
-                                }`}>
-                            {tab}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-6 py-8">
+            {/* CONTENT */}
+            <div className="max-w-7xl mx-auto px-4 py-6">
+                {/* OVERVIEW */}
                 {view === "Overview" && (
-                    <div className="space-y-8">
-                        {/* Stats Cards */}
+                    <div className="space-y-6">
+                        {/* Stats Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            <StatCard icon={Target} title="Overall Progress" value={`${avgProgress.toFixed(1)}%`}
-                                subtitle={`${completedTasks}/${totalTasks} completed`} color="from-blue-500 to-blue-600" trend="+5%" />
-                            <StatCard icon={DollarSign} title="Budget Spent" value={`SAR ${(totalSpent / 1000).toFixed(0)}K`}
-                                subtitle={`${(budgetRemaining / 1000).toFixed(0)}K remaining`} color="from-green-500 to-green-600" trend="-2%" />
-                            <StatCard icon={Activity} title="Active Tasks" value={inProgressTasks}
-                                subtitle={`${notStartedTasks} pending`} color="from-orange-500 to-red-600" trend="+3%" />
-                            <StatCard icon={Users} title="Team Size" value={teamData.length || 0}
-                                subtitle={`${performanceData.length || 0} tracked`} color="from-purple-500 to-purple-600" />
+                            <StatCard
+                                icon={CheckCircle}
+                                title="Tasks Completed"
+                                value={`${stats.completed}/${stats.totalTasks}`}
+                                subtitle={`${stats.avgProgress}% Progress`}
+                                color="from-green-400 to-emerald-600"
+                                trend={`+${stats.avgProgress}%`}
+                            />
+                            <StatCard
+                                icon={Activity}
+                                title="In Progress"
+                                value={stats.inProgress}
+                                subtitle={`${stats.pending} Pending`}
+                                color="from-blue-400 to-blue-600"
+                            />
+                            <StatCard
+                                icon={DollarSign}
+                                title="Budget Spent"
+                                value={formatCurrency(stats.totalSpent)}
+                                subtitle={`of ${formatCurrency(stats.totalBudget)}`}
+                                color="from-purple-400 to-purple-600"
+                                trend={`${Math.round((stats.totalSpent / stats.totalBudget) * 100)}%`}
+                            />
+                            <StatCard
+                                icon={Calendar}
+                                title="Days Remaining"
+                                value={stats.daysLeft}
+                                subtitle={`Until ${PROJECT.end.toLocaleDateString()}`}
+                                color="from-orange-400 to-red-600"
+                            />
+                            <StatCard
+                                icon={Receipt}
+                                title="Total Invoices"
+                                value={formatCurrency(stats.invoicesTotal)}
+                                subtitle={`${stats.invoicesPaid} Paid, ${stats.invoicesPending} Pending`}
+                                color="from-cyan-400 to-cyan-600"
+                            />
+                            <StatCard
+                                icon={Wallet}
+                                title="Client Balance"
+                                value={formatCurrency(stats.clientBalance)}
+                                subtitle={`${stats.clientBalance >= 0 ? 'Credit' : 'Debit'}`}
+                                color={stats.clientBalance >= 0 ? "from-green-400 to-green-600" : "from-red-400 to-red-600"}
+                                trend={stats.clientBalance >= 0 ? '+' : '-'}
+                            />
+                            <StatCard
+                                icon={TrendingUp}
+                                title="Total Invoiced"
+                                value={formatCurrency(stats.totalInvoiced)}
+                                subtitle="To client"
+                                color="from-indigo-400 to-indigo-600"
+                            />
+                            <StatCard
+                                icon={TrendingDown}
+                                title="Total Received"
+                                value={formatCurrency(stats.totalReceived)}
+                                subtitle="From client"
+                                color="from-teal-400 to-teal-600"
+                            />
                         </div>
 
-                        {/* Charts */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border} lg:col-span-2`}>
-                                <h3 className="text-xl font-bold flex items-center gap-2 mb-6">
-                                    <Calendar className="text-purple-600" size={24} />Timeline - Planned vs Actual
-                                </h3>
-                                <ResponsiveContainer width="100%" height={350}>
-                                    <AreaChart data={timelineData}>
-                                        <defs>
-                                            <linearGradient id="colorPlanned" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#cbd5e1" stopOpacity={0.8} />
-                                                <stop offset="95%" stopColor="#cbd5e1" stopOpacity={0} />
-                                            </linearGradient>
-                                            <linearGradient id="colorActual" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#10b981" stopOpacity={0.8} />
-                                                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
-                                            </linearGradient>
-                                        </defs>
+                        {/* Systems Health */}
+                        <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                            <h2 className="text-2xl font-bold mb-6">Systems Health</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                {systemsHealth.map(sys => (
+                                    <SystemHealthCard key={sys.system} {...sys} />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Budget Overview Chart */}
+                        <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                            <h2 className="text-2xl font-bold mb-6">Budget Overview</h2>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={budgetData}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip formatter={(value) => formatCurrency(value)} />
+                                    <Legend />
+                                    <Bar dataKey="allocated" fill="#3b82f6" name="Allocated" />
+                                    <Bar dataKey="spent" fill="#8b5cf6" name="Spent" />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                )}
+
+                {/* BUDGET */}
+                {view === "Budget" && (
+                    <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className={`${theme.card} p-6 rounded-xl shadow-lg border ${theme.border}`}>
+                                <h3 className="text-sm text-gray-500 mb-1">Total Budget</h3>
+                                <p className="text-3xl font-bold text-blue-600">SAR {stats.totalBudget.toLocaleString()}</p>
+                            </div>
+                            <div className={`${theme.card} p-6 rounded-xl shadow-lg border ${theme.border}`}>
+                                <h3 className="text-sm text-gray-500 mb-1">Total Spent</h3>
+                                <p className="text-3xl font-bold text-red-500">SAR {stats.totalSpent.toLocaleString()}</p>
+                            </div>
+                            <div className={`${theme.card} p-6 rounded-xl shadow-lg border ${theme.border}`}>
+                                <h3 className="text-sm text-gray-500 mb-1">Remaining</h3>
+                                <p className="text-3xl font-bold text-green-600">SAR {(stats.totalBudget - stats.totalSpent).toLocaleString()}</p>
+                            </div>
+                        </div>
+
+                        <div className={`${theme.card} rounded-xl shadow-lg border ${theme.border} overflow-x-auto`}>
+                            <table className="w-full">
+                                <thead className="bg-gray-100">
+                                    <tr>
+                                        <th className="px-4 py-3 text-left">Category</th>
+                                        <th className="px-4 py-3 text-right">Allocated</th>
+                                        <th className="px-4 py-3 text-right">Spent</th>
+                                        <th className="px-4 py-3 text-right">Remaining</th>
+                                        <th className="px-4 py-3 text-center">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {budgetData.map((item, i) => {
+                                        const pct = (item.spent / item.allocated) * 100;
+                                        return (
+                                            <tr key={i} className="border-b hover:bg-gray-50">
+                                                <td className="px-4 py-3 font-medium">{item.name}</td>
+                                                <td className="px-4 py-3 text-right">SAR {item.allocated.toLocaleString()}</td>
+                                                <td className="px-4 py-3 text-right text-red-600">SAR {item.spent.toLocaleString()}</td>
+                                                <td className="px-4 py-3 text-right font-semibold text-green-600">
+                                                    SAR {(item.allocated - item.spent).toLocaleString()}
+                                                </td>
+                                                <td className="px-4 py-3 text-center">
+                                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${pct >= 90 ? "bg-red-100 text-red-700" : pct >= 80 ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700"
+                                                        }`}>
+                                                        {pct.toFixed(0)}%
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+
+                {/* INVOICES */}
+                {view === "Invoices" && (
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-3xl font-bold">Invoices Management</h2>
+                            {hasPermission('all') && (
+                                <button
+                                    onClick={() => setShowInvoiceModal(true)}
+                                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold flex items-center gap-2 hover:shadow-lg"
+                                >
+                                    <Plus size={20} />
+                                    Add Invoice
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Invoices Table */}
+                        <div className={`${theme.card} rounded-xl shadow-lg border ${theme.border} overflow-hidden`}>
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+                                        <tr>
+                                            <th className="px-6 py-4 text-left font-semibold">Invoice #</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Vendor</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Category</th>
+                                            <th className="px-6 py-4 text-right font-semibold">Amount</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Issue Date</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Due Date</th>
+                                            <th className="px-6 py-4 text-center font-semibold">Status</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200">
+                                        {invoicesData.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="8" className="px-6 py-12 text-center text-gray-500">
+                                                    No invoices found. Click "Add Invoice" to create one.
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            invoicesData.map((invoice, i) => (
+                                                <tr key={i} className={theme.hover}>
+                                                    <td className="px-6 py-4 font-mono text-sm">{invoice.invoiceNumber}</td>
+                                                    <td className="px-6 py-4">{invoice.vendor}</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold">
+                                                            {invoice.category}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right font-bold">{formatCurrency(invoice.amount)}</td>
+                                                    <td className="px-6 py-4 text-sm text-gray-600">{invoice.issueDate}</td>
+                                                    <td className="px-6 py-4 text-sm text-gray-600">{invoice.dueDate}</td>
+                                                    <td className="px-6 py-4 text-center">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${invoice.status === "Paid"
+                                                            ? "bg-green-100 text-green-800"
+                                                            : invoice.status === "Pending"
+                                                                ? "bg-yellow-100 text-yellow-800"
+                                                                : "bg-red-100 text-red-800"
+                                                            }`}>
+                                                            {invoice.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-sm text-gray-600">{invoice.description || '-'}</td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                    <tfoot className="bg-gray-50">
+                                        <tr>
+                                            <td colSpan="3" className="px-6 py-4 font-bold text-right">Total:</td>
+                                            <td className="px-6 py-4 text-right font-bold text-lg">{formatCurrency(stats.invoicesTotal)}</td>
+                                            <td colSpan="4"></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Invoice Summary Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-green-100 rounded-lg">
+                                        <Check className="text-green-600" size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500 uppercase">Paid Invoices</p>
+                                        <p className="text-2xl font-bold">{stats.invoicesPaid}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-yellow-100 rounded-lg">
+                                        <Clock className="text-yellow-600" size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500 uppercase">Pending Invoices</p>
+                                        <p className="text-2xl font-bold">{stats.invoicesPending}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-blue-100 rounded-lg">
+                                        <DollarSign className="text-blue-600" size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500 uppercase">Total Amount</p>
+                                        <p className="text-2xl font-bold">{formatCurrency(stats.invoicesTotal)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {/* TASKS */}
+                {view === "Tasks" && (
+                    <div className="space-y-6">
+                        {/* Filters */}
+                        <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                            <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 font-semibold mb-4">
+                                <Filter size={20} />Filters
+                                <ChevronRight className={`transition-transform ${showFilters ? "rotate-90" : ""}`} size={20} />
+                            </button>
+                            {showFilters && (
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <select onChange={(e) => setFilterStatus(e.target.value)} className={`px-4 py-2 rounded-lg border ${theme.border} ${theme.card}`}>
+                                        <option>All Status</option>
+                                        <option>Completed</option>
+                                        <option>In Progress</option>
+                                        <option>Pending</option>
+                                    </select>
+                                    <select onChange={(e) => setFilterOwner(e.target.value)} className={`px-4 py-2 rounded-lg border ${theme.border} ${theme.card}`}>
+                                        <option>All Owners</option>
+                                        {[...new Set(tasksData.map(t => t.assigned_to))].filter(Boolean).map(o => <option key={o}>{o}</option>)}
+                                    </select>
+                                    <button onClick={() => { setFilterStatus("All"); setFilterOwner("All"); }}
+                                        className="px-4 py-2 bg-gray-200 rounded-lg font-medium">
+                                        Reset
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Tasks Table */}
+                        <div className={`${theme.card} rounded-xl shadow-lg border ${theme.border} overflow-x-auto`}>
+                            <table className="w-full">
+                                <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                                    <tr>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">ID</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Block</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">System</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Task</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Assigned</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Progress</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Status</th>
+                                        <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Deadline</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-200">
+                                    {tasksData
+                                        .filter(t => filterStatus === "All" || t.status === filterStatus)
+                                        .filter(t => filterOwner === "All" || t.assigned_to === filterOwner)
+                                        .filter(t => !searchTerm || t.subTask?.toLowerCase().includes(searchTerm.toLowerCase()))
+                                        .map((task, i) => {
+                                            const today = new Date();
+                                            const deadline = new Date(task.deadlineDate);
+                                            const days = Math.ceil((deadline - today) / 86400000);
+                                            const isUrgent = days <= 3 && days >= 0;
+
+                                            return (
+                                                <tr key={i} className={`${theme.hover}`}>
+                                                    <td className="px-6 py-4 font-mono text-sm font-bold">{task.id}</td>
+                                                    <td className="px-6 py-4">{task.block}</td>
+                                                    <td className="px-6 py-4 font-medium">{task.system}</td>
+                                                    <td className="px-6 py-4 text-sm">{task.subTask}</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                                            {task.assigned_to}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4 min-w-[200px]">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex-1 bg-gray-200 rounded-full h-3">
+                                                                <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-3 rounded-full" style={{ width: `${task.progress}%` }} />
+                                                            </div>
+                                                            <span className="text-sm font-bold">{task.progress}%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${task.status === "Completed" ? "bg-green-100 text-green-800" :
+                                                            task.status === "In Progress" ? "bg-blue-100 text-blue-800" : "bg-orange-100 text-orange-800"
+                                                            }`}>
+                                                            {task.status}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4">
+                                                        {isUrgent ? (
+                                                            <span className="px-3 py-1 bg-red-500 text-white text-xs font-bold rounded-full animate-pulse">
+                                                                ⚠️ {days}d left
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-sm">{task.deadlineDate}</span>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                )}
+
+
+                {/* CLIENT ACCOUNT */}
+                {view === "Client Account" && (
+                    <div className="space-y-6">
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <h2 className="text-3xl font-bold">Client Account Statement</h2>
+                                <p className="text-gray-500 mt-1">{PROJECT.client}</p>
+                            </div>
+                            {hasPermission('all') && (
+                                <button
+                                    onClick={() => setShowClientTransactionModal(true)}
+                                    className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold flex items-center gap-2 hover:shadow-lg"
+                                >
+                                    <Plus size={20} />
+                                    Add Transaction
+                                </button>
+                            )}
+                        </div>
+
+                        {/* Account Summary */}
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-blue-100 rounded-lg">
+                                        <FileText className="text-blue-600" size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500 uppercase">Total Invoiced</p>
+                                        <p className="text-2xl font-bold text-blue-600">{formatCurrency(stats.totalInvoiced)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-green-100 rounded-lg">
+                                        <ArrowDown className="text-green-600" size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500 uppercase">Total Received</p>
+                                        <p className="text-2xl font-bold text-green-600">{formatCurrency(stats.totalReceived)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className={`p-3 rounded-lg ${stats.clientBalance >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
+                                        <Wallet className={stats.clientBalance >= 0 ? 'text-green-600' : 'text-red-600'} size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500 uppercase">Current Balance</p>
+                                        <p className={`text-2xl font-bold ${stats.clientBalance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                            {formatCurrency(Math.abs(stats.clientBalance))}
+                                        </p>
+                                        <p className="text-xs text-gray-400">{stats.clientBalance >= 0 ? 'Receivable' : 'Payable'}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-center gap-4">
+                                    <div className="p-3 bg-purple-100 rounded-lg">
+                                        <FileSpreadsheet className="text-purple-600" size={24} />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm text-gray-500 uppercase">Transactions</p>
+                                        <p className="text-2xl font-bold">{clientAccountData.length}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Transactions Table */}
+                        <div className={`${theme.card} rounded-xl shadow-lg border ${theme.border} overflow-hidden`}>
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-gradient-to-r from-green-600 to-emerald-600 text-white">
+                                        <tr>
+                                            <th className="px-6 py-4 text-left font-semibold">Date</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Type</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Description</th>
+                                            <th className="px-6 py-4 text-left font-semibold">Reference</th>
+                                            <th className="px-6 py-4 text-right font-semibold">Debit (Dr)</th>
+                                            <th className="px-6 py-4 text-right font-semibold">Credit (Cr)</th>
+                                            <th className="px-6 py-4 text-right font-semibold">Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200">
+                                        {clientAccountData.length === 0 ? (
+                                            <tr>
+                                                <td colSpan="7" className="px-6 py-12 text-center text-gray-500">
+                                                    No transactions found. Click "Add Transaction" to create one.
+                                                </td>
+                                            </tr>
+                                        ) : (
+                                            clientAccountData.map((trans, i) => (
+                                                <tr key={i} className={theme.hover}>
+                                                    <td className="px-6 py-4 text-sm">{trans.date}</td>
+                                                    <td className="px-6 py-4">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${trans.type === "invoice"
+                                                            ? "bg-blue-100 text-blue-800"
+                                                            : trans.type === "payment"
+                                                                ? "bg-green-100 text-green-800"
+                                                                : "bg-gray-100 text-gray-800"
+                                                            }`}>
+                                                            {trans.type.charAt(0).toUpperCase() + trans.type.slice(1)}
+                                                        </span>
+                                                    </td>
+                                                    <td className="px-6 py-4">{trans.description}</td>
+                                                    <td className="px-6 py-4 font-mono text-sm text-gray-600">{trans.referenceNumber || '-'}</td>
+                                                    <td className="px-6 py-4 text-right font-semibold text-red-600">
+                                                        {trans.debit > 0 ? formatCurrency(trans.debit) : '-'}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right font-semibold text-green-600">
+                                                        {trans.credit > 0 ? formatCurrency(trans.credit) : '-'}
+                                                    </td>
+                                                    <td className={`px-6 py-4 text-right font-bold ${trans.balance >= 0 ? 'text-green-600' : 'text-red-600'
+                                                        }`}>
+                                                        {formatCurrency(Math.abs(trans.balance))}
+                                                        <span className="text-xs ml-1">{trans.balance >= 0 ? 'Dr' : 'Cr'}</span>
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Account Summary Chart */}
+                        {clientAccountData.length > 0 && (
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <h3 className="text-xl font-bold mb-4">Balance Trend</h3>
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <LineChart data={clientAccountData}>
                                         <CartesianGrid strokeDasharray="3 3" />
                                         <XAxis dataKey="date" />
-                                        <YAxis domain={[0, 100]} />
-                                        <Tooltip />
-                                        <Legend />
-                                        <Area type="monotone" dataKey="planned" stroke="#94a3b8" fillOpacity={1} fill="url(#colorPlanned)" name="Planned" />
-                                        <Area type="monotone" dataKey="actual" stroke="#10b981" fillOpacity={1} fill="url(#colorActual)" name="Actual" />
-                                    </AreaChart>
-                                </ResponsiveContainer>
-                            </div>
-
-                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
-                                <h3 className="text-xl font-bold flex items-center gap-2 mb-6">
-                                    <Activity className="text-blue-600" size={24} />Task Status Distribution
-                                </h3>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <PieChart>
-                                        <Pie
-                                            data={[
-                                                { name: "Completed", value: completedTasks },
-                                                { name: "In Progress", value: inProgressTasks },
-                                                { name: "Not Started", value: notStartedTasks }
-                                            ]}
-                                            dataKey="value"
-                                            cx="50%"
-                                            cy="50%"
-                                            labelLine={false}
-                                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                                            outerRadius={100}
-                                        >
-                                            {[0, 1, 2].map((_, i) => <Cell key={i} fill={["#10b981", "#3b82f6", "#f59e0b"][i]} />)}
-                                        </Pie>
-                                        <Tooltip />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </div>
-
-                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
-                                <h3 className="text-xl font-bold flex items-center gap-2 mb-6">
-                                    <DollarSign className="text-green-600" size={24} />Budget Overview
-                                </h3>
-                                <ResponsiveContainer width="100%" height={300}>
-                                    <BarChart data={budgetData}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="name" angle={-15} textAnchor="end" height={100} />
                                         <YAxis />
-                                        <Tooltip />
+                                        <Tooltip formatter={(value) => formatCurrency(value)} />
                                         <Legend />
-                                        <Bar dataKey="allocated" fill="#3b82f6" name="Allocated" radius={[8, 8, 0, 0]} />
-                                        <Bar dataKey="spent" fill="#10b981" name="Spent" radius={[8, 8, 0, 0]} />
-                                    </BarChart>
+                                        <Line type="monotone" dataKey="balance" stroke="#10b981" strokeWidth={2} name="Balance" />
+                                    </LineChart>
                                 </ResponsiveContainer>
                             </div>
+                        )}
+                    </div>
+                )}
+                {/* TEAM */}
+                {view === "Team" && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        {teamData.map((member, i) => (
+                            <div key={i} className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <div className="flex items-start gap-4 mb-6">
+                                    <div className="relative">
+                                        {member.image ? (
+                                            <img src={member.image} alt={member.name} className="w-24 h-24 rounded-full object-cover border-4 border-blue-500" />
+                                        ) : (
+                                            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-3xl border-4 border-blue-500">
+                                                {member.name?.split(" ").map(n => n[0]).join("")}
+                                            </div>
+                                        )}
+                                        <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
+                                        <p className="text-blue-600 font-semibold mb-2">{member.role}</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold flex items-center gap-1">
+                                                <Mail size={12} />{member.email}
+                                            </span>
+                                            {member.phone && (
+                                                <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold flex items-center gap-1">
+                                                    <Phone size={12} />{member.phone}
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                {member.skills && (
+                                    <div className="mb-4">
+                                        <p className="text-sm font-semibold mb-2 flex items-center gap-2">
+                                            <Award size={16} className="text-yellow-500" />Skills:
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {member.skills.split(",").map((skill, idx) => (
+                                                <span key={idx} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-xs font-medium">
+                                                    {skill.trim()}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                {member.systems && (
+                                    <div className="mb-4">
+                                        <p className="text-sm font-semibold mb-2 flex items-center gap-2">
+                                            <Briefcase size={16} className="text-blue-500" />Systems:
+                                        </p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {member.systems.split(",").map((sys, idx) => (
+                                                <span key={idx} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold">
+                                                    {sys.trim()}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                                <div className="pt-4 border-t">
+                                    <p className="text-sm font-semibold mb-2">Performance:</p>
+                                    <div className="w-full bg-gray-200 h-3 rounded-full">
+                                        <div className="h-3 rounded-full bg-gradient-to-r from-green-400 to-blue-500" style={{ width: `${member.performanceScore || 0}%` }} />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+
+                {/* PHOTOS */}
+                {view === "Photos" && (
+                    <div className="space-y-6">
+                        {hasPermission('upload') && (
+                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
+                                <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                    <Upload className="text-blue-600" size={24} />Upload Photo
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <input type="file" accept="image/*" onChange={(e) => setPhotoUploadForm({ ...photoUploadForm, file: e.target.files[0] })}
+                                        className={`px-4 py-2 rounded-lg border ${theme.border} ${theme.card}`} />
+                                    <select value={photoUploadForm.system} onChange={(e) => setPhotoUploadForm({ ...photoUploadForm, system: e.target.value })}
+                                        className={`px-4 py-2 rounded-lg border ${theme.border} ${theme.card}`}>
+                                        <option value="">Select System</option>
+                                        {[...new Set(tasksData.map(t => t.system))].filter(Boolean).map(s => <option key={s}>{s}</option>)}
+                                    </select>
+                                    <input type="text" placeholder="Description" value={photoUploadForm.description}
+                                        onChange={(e) => setPhotoUploadForm({ ...photoUploadForm, description: e.target.value })}
+                                        className={`px-4 py-2 rounded-lg border ${theme.border} ${theme.card}`} />
+                                </div>
+                                <button onClick={uploadPhoto} disabled={!photoUploadForm.file || !photoUploadForm.system || uploadingPhoto}
+                                    className="mt-4 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold disabled:opacity-50">
+                                    {uploadingPhoto ? 'Uploading...' : 'Upload Photo'}
+                                </button>
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {photosData.map((photo, i) => (
+                                <div key={i} className="border rounded-lg overflow-hidden shadow hover:shadow-lg cursor-pointer transition"
+                                    onClick={() => setModalPhoto(photo)}>
+                                    {photo.photoUrl ? (
+                                        <img
+                                            src={photo.photoUrl}
+                                            alt={photo.description || 'Photo'}
+                                            className="w-full h-48 object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                            <span className="text-gray-400">No Image</span>
+                                        </div>
+                                    )}
+                                    <div className="p-3 bg-white">
+                                        <h4 className="font-semibold">{photo.system}</h4>
+                                        <p className="text-sm text-gray-600 truncate">{photo.description}</p>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
-                        {/* Milestones Section */}
-                        {milestonesData.length > 0 && (
-                            <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
-                                <h3 className="text-xl font-bold flex items-center gap-2 mb-6">
-                                    <Star className="text-yellow-500" size={24} />Project Milestones
-                                </h3>
-                                <div className="relative">
-                                    <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-                                    <div className="space-y-6">
-                                        {milestonesData.map((milestone, i) => (
-                                            <div key={i} className="relative pl-12">
-                                                <div className={`absolute left-0 w-8 h-8 rounded-full flex items-center justify-center ${milestone.status === "Completed" ? "bg-green-500" :
-                                                    milestone.status === "In Progress" ? "bg-blue-500" : "bg-gray-300"
-                                                    }`}>
-                                                    {milestone.status === "Completed" && <CheckCircle className="text-white" size={16} />}
-                                                </div>
-                                                <div className="bg-gray-50 rounded-lg p-4">
-                                                    <div className="flex items-start justify-between">
-                                                        <div>
-                                                            <h4 className="font-bold text-lg">{milestone.name}</h4>
-                                                            <p className="text-sm text-gray-600">{milestone.description}</p>
-                                                            <span className="text-xs text-gray-500 mt-1 inline-block">{milestone.date}</span>
-                                                        </div>
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${milestone.status === "Completed" ? "bg-green-100 text-green-800" :
-                                                            milestone.status === "In Progress" ? "bg-blue-100 text-blue-800" : "bg-gray-100 text-gray-800"
-                                                            }`}>
-                                                            {milestone.status}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
+                        {modalPhoto && (
+                            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                                onClick={() => setModalPhoto(null)}>
+                                <div className="bg-white rounded-lg max-w-3xl w-full" onClick={(e) => e.stopPropagation()}>
+                                    {modalPhoto.photoUrl ? (
+                                        <img
+                                            src={modalPhoto.photoUrl}
+                                            alt={modalPhoto.description}
+                                            className="w-full object-contain max-h-96"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-96 bg-gray-200 flex items-center justify-center">
+                                            <span className="text-gray-400">No Image</span>
+                                        </div>
+                                    )}
+                                    <div className="p-4">
+                                        <h4 className="font-bold text-lg">{modalPhoto.system}</h4>
+                                        <p className="text-gray-700">{modalPhoto.description}</p>
+                                        {modalPhoto.photoUrl && (
+                                            <a href={modalPhoto.photoUrl} target="_blank" rel="noopener noreferrer"
+                                                className="text-blue-500 text-sm mt-2 inline-block">
+                                                Open in new tab
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         )}
                     </div>
                 )}
-
-                {view === "Tasks" && (
-                    <div className="space-y-6">
-                        {/* Filters */}
-                        <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
-                            <button onClick={() => setShowFilters(!showFilters)}
-                                className="flex items-center gap-2 text-lg font-semibold mb-4 hover:text-blue-600 transition-colors">
-                                <Filter size={20} /> Filters
-                                <ChevronRight className={`transform transition-transform ${showFilters ? "rotate-90" : ""}`} size={20} />
-                            </button>
-
-                            {showFilters && (
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2">Status</label>
-                                        <select onChange={e => setFilterStatus(e.target.value)}
-                                            className={`w-full px-4 py-2 rounded-lg border ${theme.border} ${theme.card} focus:ring-2 focus:ring-blue-500`}>
-                                            <option>All</option>
-                                            <option>Completed</option>
-                                            <option>In Progress</option>
-                                            <option>Not Started</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2">Assigned To</label>
-                                        <select onChange={e => setFilterOwner(e.target.value)}
-                                            className={`w-full px-4 py-2 rounded-lg border ${theme.border} ${theme.card} focus:ring-2 focus:ring-blue-500`}>
-                                            <option>All</option>
-                                            {[...new Set(tasksData.map(t => t.assigned_to))].map(owner => (
-                                                <option key={owner}>{owner}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium mb-2">Priority</label>
-                                        <select className={`w-full px-4 py-2 rounded-lg border ${theme.border} ${theme.card} focus:ring-2 focus:ring-blue-500`}>
-                                            <option>All</option>
-                                            <option>High</option>
-                                            <option>Medium</option>
-                                            <option>Low</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Tasks Table */}
-                        <div className={`${theme.card} rounded-xl shadow-lg border ${theme.border} overflow-hidden`}>
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-                                        <tr>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">ID</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Block</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">System</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Phase</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Assigned To</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Progress</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Status</th>
-                                            <th className="px-6 py-4 text-left text-xs font-semibold uppercase">Duration</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200">
-                                        {filteredTasks.map(task => (
-                                            <tr key={task.id} className={`${theme.hover} transition-all`}>
-                                                <td className="px-6 py-4 font-mono text-sm font-semibold">{task.id}</td>
-                                                <td className="px-6 py-4">{task.block}</td>
-                                                <td className="px-6 py-4 font-medium">{task.system}</td>
-                                                <td className="px-6 py-4 text-sm">{task.phase}</td>
-                                                <td className="px-6 py-4">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${task.assigned_to === "Lakshmi" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"
-                                                        }`}>
-                                                        {task.assigned_to}
-                                                    </span>
-                                                </td>
-                                                <td className="px-6 py-4">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex-1 bg-gray-200 rounded-full h-2.5">
-                                                            <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-2.5 rounded-full transition-all duration-500"
-                                                                style={{ width: `${task.progress}%` }} />
-                                                        </div>
-                                                        <span className="text-sm font-semibold min-w-[3rem] text-right">{task.progress}%</span>
-                                                    </div>
-                                                </td>
-                                                <td className="px-6 py-4"><StatusBadge status={task.status} /></td>
-                                                <td className="px-6 py-4 text-sm">{task.duration_days} days</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {view === "Team" && (
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {teamData.map((member, i) => (
-                                <div key={i} className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border} hover:shadow-xl transition-all`}>
-                                    <div className="flex items-start gap-4 mb-6">
-                                        {/* Profile Image */}
-                                        <div className="relative">
-                                            {member.image ? (
-                                                <img
-                                                    src={member.image}
-                                                    alt={member.name}
-                                                    className="w-24 h-24 rounded-full object-cover border-4 border-blue-500"
-                                                />
-                                            ) : (
-                                                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-3xl border-4 border-blue-500">
-                                                    {member.name?.split(' ').map(n => n[0]).join('')}
-                                                </div>
-                                            )}
-                                            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white"></div>
-                                        </div>
-
-                                        {/* Member Info */}
-                                        <div className="flex-1">
-                                            <h3 className="text-2xl font-bold mb-1">{member.name}</h3>
-                                            <p className="text-blue-600 font-semibold mb-2">{member.role}</p>
-                                            <div className="flex flex-wrap gap-2 mb-3">
-                                                <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-semibold flex items-center gap-1">
-                                                    <Mail size={12} />{member.email}
-                                                </span>
-                                                {member.phone && (
-                                                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold flex items-center gap-1">
-                                                        <Phone size={12} />{member.phone}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Skills */}
-                                    {member.skills && (
-                                        <div className="mb-4">
-                                            <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                                                <Award size={16} className="text-yellow-500" />Skills & Expertise:
-                                            </p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {member.skills.split(',').map((skill, idx) => (
-                                                    <span key={idx} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-lg text-xs font-medium">
-                                                        {skill.trim()}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Systems Responsible */}
-                                    {member.systems && (
-                                        <div className="mb-4">
-                                            <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                                                <Briefcase size={16} className="text-blue-500" />Responsible Systems:
-                                            </p>
-                                            <div className="flex flex-wrap gap-2">
-                                                {member.systems.split(',').map((sys, idx) => (
-                                                    <span key={idx} className="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-semibold">
-                                                        {sys.trim()}
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Stats */}
-                                    <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
-                                        <div className="text-center">
-                                            <p className="text-2xl font-bold text-blue-600">{member.tasksCompleted || 0}</p>
-                                            <p className="text-xs text-gray-600">Completed</p>
-                                        </div>
-                                        <div className="text-center">
-                                            <p className="text-2xl font-bold text-orange-600">{member.tasksInProgress || 0}</p>
-                                            <p className="text-xs text-gray-600">In Progress</p>
-                                        </div>
-                                        <div className="text-center">
-                                            <p className="text-2xl font-bold text-green-600">{member.performanceScore || 0}%</p>
-                                            <p className="text-xs text-gray-600">Performance</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {view === "Performance" && (
-                    <div className="space-y-6">
-                        <div className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
-                            <div className="flex items-center gap-2 text-lg font-semibold mb-4">
-                                <Filter size={20} /> Team Filter
-                            </div>
-                            <select onChange={e => setFilterTeam(e.target.value)}
-                                className={`w-full px-4 py-2 rounded-lg border ${theme.border} ${theme.card} focus:ring-2 focus:ring-blue-500`}>
-                                <option>All</option>
-                                {[...new Set(performanceData.map(m => m.team))].map(team => (
-                                    <option key={team}>{team}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            {filteredPerformance.map(member => (
-                                <div key={member.name} className={`${theme.card} rounded-xl p-6 shadow-lg border ${theme.border}`}>
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-2xl">
-                                                {member.name.split(' ').map(n => n[0]).join('')}
-                                            </div>
-                                            <div>
-                                                <h3 className="text-xl font-bold">{member.name}</h3>
-                                                <span className="text-sm text-gray-500">{member.team} Team</span>
-                                            </div>
-                                        </div>
-                                        <Award className="text-yellow-500" size={40} />
-                                    </div>
-
-                                    <ResponsiveContainer width="100%" height={280}>
-                                        <RadarChart data={[
-                                            { metric: "Productivity", value: member.productivity },
-                                            { metric: "Quality", value: member.quality },
-                                            { metric: "Teamwork", value: member.teamwork },
-                                            { metric: "Reliability", value: member.reliability },
-                                        ]}>
-                                            <PolarGrid />
-                                            <PolarAngleAxis dataKey="metric" />
-                                            <PolarRadiusAxis angle={90} domain={[0, 100]} />
-                                            <Radar dataKey="value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
-                                            <Tooltip />
-                                        </RadarChart>
-                                    </ResponsiveContainer>
-
-                                    <div className="mt-4 grid grid-cols-2 gap-3">
-                                        <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
-                                            <p className="text-3xl font-bold text-blue-600">{member.productivity}%</p>
-                                            <p className="text-xs text-gray-600 mt-1">Productivity</p>
-                                        </div>
-                                        <div className="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
-                                            <p className="text-3xl font-bold text-green-600">{member.quality}%</p>
-                                            <p className="text-xs text-gray-600 mt-1">Quality</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* Add similar views for Budget, Materials, Equipment, Safety, Photos, Milestones, Risks, Comments */}
-                {/* (Code continues with all other views following the same pattern...) */}
-
             </div>
-
-            {/* Footer */}
-            <div className={`${theme.card} border-t ${theme.border} mt-12`}>
-                <div className="max-w-7xl mx-auto px-6 py-8">
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                                <FileText className="text-white" size={24} />
-                            </div>
-                            <div>
-                                <p className="text-sm text-gray-500">Report Generated By</p>
-                                <p className="font-bold text-lg">Bakri Mohammed</p>
-                                <p className="text-sm text-gray-600">Project Management Department</p>
-                            </div>
-                        </div>
-                        <div className="text-center md:text-right">
-                            <p className="text-sm text-gray-500">Generated on</p>
-                            <p className="font-semibold text-lg">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
-                            <p className="text-xs text-gray-400 mt-1">{projectName}</p>
+            {/* COMMENTS SECTION */}
+            {view === "Comments" && (
+                <div className="max-w-4xl mx-auto space-y-8 p-4">
+                    {/* Add Comment Card */}
+                    <div className="bg-white dark:bg-slate-800 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-slate-800 dark:text-white">
+                            <MessageSquare className="text-blue-500" size={24} /> Post New Comment
+                        </h3>
+                        <textarea
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-900 focus:ring-2 focus:ring-blue-500 outline-none transition-all min-h-[100px]"
+                            placeholder="Write your comment here..."
+                        />
+                        <div className="flex flex-wrap justify-between items-center mt-4 gap-4">
+                            <select
+                                value={commentPriority}
+                                onChange={(e) => setCommentPriority(e.target.value)}
+                                className="px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 text-sm outline-none font-medium"
+                            >
+                                <option value="Low">Low Priority</option>
+                                <option value="Medium">Medium Priority</option>
+                                <option value="High">High Priority</option>
+                            </select>
+                            <button
+                                onClick={submitComment}
+                                disabled={submittingComment || !newComment.trim()}
+                                className="px-8 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold flex items-center gap-2 disabled:opacity-50 transition-all shadow-md shadow-blue-200 dark:shadow-none"
+                            >
+                                {submittingComment ? "Sending..." : <><Send size={18} /> Post Comment</>}
+                            </button>
                         </div>
                     </div>
-                    <div className="mt-6 pt-6 border-t border-gray-200 text-center">
-                        <p className="text-sm text-gray-500">© 2025 Project Management Dashboard - All Rights Reserved</p>
+
+                    {/* List of Comments */}
+                    <div className="space-y-4">
+                        <h3 className="text-lg font-semibold px-2 text-slate-700 dark:text-slate-300">Recent Updates</h3>
+                        {commentsData.length === 0 ? (
+                            <div className="text-center py-12 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border-2 border-dashed border-slate-200 dark:border-slate-700">
+                                <p className="text-slate-400">No comments found yet.</p>
+                            </div>
+                        ) : (
+                            commentsData.map((c, i) => (
+                                <div
+                                    key={i}
+                                    className="bg-white dark:bg-slate-800 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow"
+                                >
+                                    <div className="flex items-start gap-4">
+                                        {/* Avatar */}
+                                        <img
+                                            src={c.avatar || `https://ui-avatars.com/api/?name=${c.username}&background=random`}
+                                            alt={c.username}
+                                            className="w-12 h-12 rounded-full ring-2 ring-slate-100 dark:ring-slate-700 object-cover"
+                                        />
+
+                                        <div className="flex-1">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <h4 className="font-bold text-slate-900 dark:text-white">{c.username}</h4>
+                                                    <p className="text-[11px] text-slate-500 font-semibold uppercase tracking-wider">
+                                                        {c.position} • {c.department}
+                                                    </p>
+                                                </div>
+                                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${c.priority === "High" ? "bg-red-100 text-red-600" :
+                                                    c.priority === "Low" ? "bg-green-100 text-green-600" :
+                                                        "bg-amber-100 text-amber-600"
+                                                    }`}>
+                                                    {c.priority}
+                                                </span>
+                                            </div>
+
+                                            <p className="mt-3 text-slate-700 dark:text-slate-300 leading-relaxed text-sm">
+                                                {c.comment}
+                                            </p>
+
+                                            <div className="mt-4 pt-3 border-t border-slate-50 dark:border-slate-700 flex justify-end">
+                                                <span className="text-[10px] text-slate-400 font-mono italic">
+                                                    {/* Date formatting for English locale */}
+                                                    {c.timestamp && !isNaN(Date.parse(c.timestamp))
+                                                        ? new Date(c.timestamp).toLocaleString('en-US', {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            hour12: true
+                                                        })
+                                                        : c.timestamp}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))
+                        )}
                     </div>
                 </div>
-            </div>
+            )}
+            {/* MATERIALS */}
+            {view === "Materials" && (
+                <div className="space-y-6">
+                    <div className="flex gap-4">
+                        <select value={selectedSystem} onChange={(e) => setSelectedSystem(e.target.value)}
+                            className={`flex-1 px-4 py-2 rounded-lg border ${theme.border} ${theme.card}`}>
+                            <option>All Systems</option>
+                            {[...new Set(materialsData.map(m => m.system))].filter(Boolean).map(s => <option key={s}>{s}</option>)}
+                        </select>
+                        <input type="text" placeholder="Search material..." value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className={`flex-1 px-4 py-2 rounded-lg border ${theme.border} ${theme.card}`} />
+                    </div>
+
+                    {[...new Set(materialsData.filter(m => selectedSystem === "All" || m.system === selectedSystem).map(m => m.system))].map(system => {
+                        const sysMats = materialsData.filter(m => m.system === system &&
+                            (m.material.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                (m.part_number || "").toLowerCase().includes(searchTerm.toLowerCase())));
+                        if (!sysMats.length) return null;
+                        const delivered = sysMats.every(m => m.delivery_status === "Delivered");
+
+                        return (
+                            <div key={system} className={`rounded-xl shadow-xl border-2 ${delivered ? "border-green-400" : "border-red-400"}`}>
+                                <div className={`flex justify-between px-6 py-4 rounded-t-xl ${delivered ? "bg-green-50" : "bg-red-50"}`}>
+                                    <h3 className="text-xl font-bold">{system}</h3>
+                                    <span className={`px-4 py-1 rounded-full text-sm font-semibold ${delivered ? "bg-green-600 text-white" : "bg-red-600 text-white"}`}>
+                                        {delivered ? "Delivered" : "Not Delivered"}
+                                    </span>
+                                </div>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-gray-100">
+                                            <tr>
+                                                <th className="px-4 py-3 text-left">Part Number</th>
+                                                <th className="px-4 py-3 text-left">Material</th>
+                                                <th className="px-4 py-3 text-center">Unit</th>
+                                                <th className="px-4 py-3 text-right">Quantity</th>
+                                                <th className="px-4 py-3 text-center">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {sysMats.map((mat, i) => (
+                                                <tr key={i} className="border-b hover:bg-gray-50">
+                                                    <td className="px-4 py-3 font-medium">{mat.part_number || "-"}</td>
+                                                    <td className="px-4 py-3">{mat.material}</td>
+                                                    <td className="px-4 py-3 text-center">{mat.unit}</td>
+                                                    <td className="px-4 py-3 text-right">{mat.quantity}</td>
+                                                    <td className="px-4 py-3 text-center">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${mat.delivery_status === "Delivered" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                                                            }`}>
+                                                            {mat.delivery_status}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+
+
+            {/* INVOICE MODAL */}
+            {showInvoiceModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className={`${theme.card} rounded-xl max-w-2xl w-full p-6`}>
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-2xl font-bold">Add New Invoice</h3>
+                            <button onClick={() => setShowInvoiceModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Invoice Number *</label>
+                                <input
+                                    type="text"
+                                    value={invoiceForm.invoiceNumber}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, invoiceNumber: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                    placeholder="INV-001"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Vendor *</label>
+                                <input
+                                    type="text"
+                                    value={invoiceForm.vendor}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, vendor: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                    placeholder="Vendor Name"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Amount (SAR) *</label>
+                                <input
+                                    type="number"
+                                    value={invoiceForm.amount}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, amount: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                    placeholder="10000"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Category *</label>
+                                <select
+                                    value={invoiceForm.category}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, category: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                >
+                                    <option value="">Select Category</option>
+                                    <option value="Materials">Materials</option>
+                                    <option value="Labor">Labor</option>
+                                    <option value="Equipment">Equipment</option>
+                                    <option value="Subcontractor">Subcontractor</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Issue Date *</label>
+                                <input
+                                    type="date"
+                                    value={invoiceForm.issueDate}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, issueDate: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Due Date *</label>
+                                <input
+                                    type="date"
+                                    value={invoiceForm.dueDate}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, dueDate: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Status</label>
+                                <select
+                                    value={invoiceForm.status}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, status: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                >
+                                    <option value="Pending">Pending</option>
+                                    <option value="Paid">Paid</option>
+                                    <option value="Overdue">Overdue</option>
+                                </select>
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-2">Description</label>
+                                <textarea
+                                    value={invoiceForm.description}
+                                    onChange={(e) => setInvoiceForm({ ...invoiceForm, description: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                    rows="3"
+                                    placeholder="Additional details about this invoice..."
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={addInvoice}
+                                disabled={submittingInvoice}
+                                className="flex-1 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold disabled:opacity-50"
+                            >
+                                {submittingInvoice ? 'Adding...' : 'Add Invoice'}
+                            </button>
+                            <button
+                                onClick={() => setShowInvoiceModal(false)}
+                                className="px-6 py-3 bg-gray-200 rounded-lg font-semibold"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* CLIENT TRANSACTION MODAL */}
+            {showClientTransactionModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className={`${theme.card} rounded-xl max-w-2xl w-full p-6`}>
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-2xl font-bold">Add Client Transaction</h3>
+                            <button onClick={() => setShowClientTransactionModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                                <X size={24} />
+                            </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Transaction Type *</label>
+                                <select
+                                    value={clientTransactionForm.type}
+                                    onChange={(e) => setClientTransactionForm({ ...clientTransactionForm, type: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                >
+                                    <option value="invoice">Invoice (Debit)</option>
+                                    <option value="payment">Payment (Credit)</option>
+                                    <option value="adjustment">Adjustment</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Amount (SAR) *</label>
+                                <input
+                                    type="number"
+                                    value={clientTransactionForm.amount}
+                                    onChange={(e) => setClientTransactionForm({ ...clientTransactionForm, amount: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                    placeholder="10000"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Reference Number</label>
+                                <input
+                                    type="text"
+                                    value={clientTransactionForm.referenceNumber}
+                                    onChange={(e) => setClientTransactionForm({ ...clientTransactionForm, referenceNumber: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                    placeholder="REF-001"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium mb-2">Date *</label>
+                                <input
+                                    type="date"
+                                    value={clientTransactionForm.date}
+                                    onChange={(e) => setClientTransactionForm({ ...clientTransactionForm, date: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                />
+                            </div>
+                            <div className="md:col-span-2">
+                                <label className="block text-sm font-medium mb-2">Description *</label>
+                                <textarea
+                                    value={clientTransactionForm.description}
+                                    onChange={(e) => setClientTransactionForm({ ...clientTransactionForm, description: e.target.value })}
+                                    className="w-full px-4 py-2 border rounded-lg"
+                                    rows="3"
+                                    placeholder="Details about this transaction..."
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex gap-3 mt-6">
+                            <button
+                                onClick={addClientTransaction}
+                                disabled={submittingClientTransaction}
+                                className="flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg font-semibold disabled:opacity-50"
+                            >
+                                {submittingClientTransaction ? 'Adding...' : 'Add Transaction'}
+                            </button>
+                            <button
+                                onClick={() => setShowClientTransactionModal(false)}
+                                className="px-6 py-3 bg-gray-200 rounded-lg font-semibold"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
